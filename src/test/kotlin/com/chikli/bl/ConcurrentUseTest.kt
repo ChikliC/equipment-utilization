@@ -2,8 +2,10 @@ package com.chikli.bl
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import com.chikli.bl.EquipmentType.ELLIPTICAL
 import com.chikli.bl.EquipmentType.TREADMILL
 import org.junit.jupiter.api.Test
+import java.time.Duration
 import java.time.LocalDateTime
 
 class ConcurrentUseTest {
@@ -22,14 +24,27 @@ class ConcurrentUseTest {
         )
     }
 
+    @Test
+    fun `another equipment`() {
+        val sessions = listOf(
+            Session(Equipment("Elliptical 1", ELLIPTICAL), LocalDateTime.parse("2022-01-01T09:05:00"), LocalDateTime.parse("2022-01-01T10:22:00"))
+        )
+
+        val sessionAnalyzer = SessionAnalyzer(sessions)
+        val results = sessionAnalyzer.analyze()
+
+        assertThat(results).containsExactly(
+            EquipmentUsage(ELLIPTICAL, listOf(Usage(1, 77)))
+        )
+    }
 
 }
 
 class SessionAnalyzer(private val sessions: List<Session>) {
     fun analyze(): List<EquipmentUsage> {
-        return listOf(
-            EquipmentUsage(TREADMILL, listOf(Usage(1, 10)))
-        )
+        return sessions.map {
+            EquipmentUsage(it.equipment.type, listOf(Usage(1, Duration.between(it.start, it.end).toMinutes())))
+        }
     }
 
 }
