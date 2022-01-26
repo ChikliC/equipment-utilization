@@ -38,13 +38,28 @@ class ConcurrentUseTest {
         )
     }
 
+    @Test
+    fun `multiple equipment at the same time`() {
+        val sessions = listOf(
+            Session(Equipment("Elliptical 1", ELLIPTICAL), LocalDateTime.parse("2022-01-01T09:05:00"), LocalDateTime.parse("2022-01-01T10:22:00")),
+            Session(Equipment("Elliptical 2", ELLIPTICAL), LocalDateTime.parse("2022-01-01T09:05:00"), LocalDateTime.parse("2022-01-01T10:22:00"))
+        )
+
+        val sessionAnalyzer = SessionAnalyzer(sessions)
+        val results = sessionAnalyzer.analyze()
+
+        assertThat(results).containsExactly(
+            EquipmentUsage(ELLIPTICAL, listOf(Usage(2, 77)))
+        )
+    }
+
 }
 
 class SessionAnalyzer(private val sessions: List<Session>) {
     fun analyze(): List<EquipmentUsage> {
         return sessions.map {
-            EquipmentUsage(it.equipment.type, listOf(Usage(1, Duration.between(it.start, it.end).toMinutes())))
-        }
+            EquipmentUsage(it.equipment.type, listOf(Usage(sessions.size, Duration.between(it.start, it.end).toMinutes())))
+        }.distinct()
     }
 
 }
