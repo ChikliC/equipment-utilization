@@ -83,25 +83,45 @@ class ConcurrentUseTest {
         )
     }
 
+    @Test
+    fun `different equipment at overlapping times`() {
+        val sessions = listOf(
+            Session(Equipment("Elliptical 1", ELLIPTICAL), LocalDateTime.parse("2022-01-01T09:00:00"), LocalDateTime.parse("2022-01-01T09:30:00")),
+            Session(Equipment("Treadmill 1", TREADMILL), LocalDateTime.parse("2022-01-01T09:26:00"), LocalDateTime.parse("2022-01-01T10:19:00")),
+            Session(Equipment("Elliptical 2", ELLIPTICAL), LocalDateTime.parse("2022-01-01T10:00:00"), LocalDateTime.parse("2022-01-01T10:45:00"))
+        )
+
+        val sessionAnalyzer = SessionAnalyzer(sessions)
+        val results = sessionAnalyzer.analyze()
+
+        assertThat(results).containsExactly(
+            EquipmentUsage(ELLIPTICAL, listOf(Usage(1, 75))),
+            EquipmentUsage(TREADMILL, listOf(Usage(1, 53)))
+        )
+    }
+
 }
 
 class SessionAnalyzer(private val sessions: List<Session>) {
-    fun analyze(): List<EquipmentUsage> {
-        val equipmentUsages = mutableListOf<EquipmentUsage>()
-        val minStart = sessions.minOf { it.start }
-        val maxEnd = sessions.maxOf { it.end }
+    fun analyze(): List<EquipmentUsage> =
+        sessions
+            .groupBy { it.equipment.type }
+            .map { (equipmentType, equipmentSessions) -> equipmentUsageFor(equipmentType, equipmentSessions) }
+
+    private fun equipmentUsageFor(equipmentType: EquipmentType, equipmentSessions: List<Session>): EquipmentUsage {
+        val minStart = equipmentSessions.minOf { it.start }
+        val maxEnd = equipmentSessions.maxOf { it.end }
 
         var currentTime = minStart.withSecond(0).withNano(0)
         val countsByMinute = mutableListOf<Int>()
         while (currentTime <= maxEnd) {
-            val concurrent = sessions.count { it.start <= currentTime && it.end > currentTime }
+            val concurrent = equipmentSessions.count { it.start <= currentTime && it.end > currentTime }
             if (concurrent > 0) countsByMinute += concurrent
             currentTime = currentTime.plusMinutes(1)
         }
 
         val usages = countsByMinute.groupBy { it }.map { Usage(it.key, it.value.count()) }
-        equipmentUsages += EquipmentUsage(sessions[0].equipment.type, usages)
-        return equipmentUsages
+        return EquipmentUsage(equipmentType, usages)
     }
 
 }
