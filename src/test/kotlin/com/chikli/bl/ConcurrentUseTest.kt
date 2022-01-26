@@ -67,6 +67,22 @@ class ConcurrentUseTest {
         )
     }
 
+    @Test
+    fun `same equipment at overlapping times`() {
+        val sessions = listOf(
+            Session(Equipment("Elliptical 1", ELLIPTICAL), LocalDateTime.parse("2022-01-01T09:00:00"), LocalDateTime.parse("2022-01-01T09:30:00")),
+            Session(Equipment("Elliptical 2", ELLIPTICAL), LocalDateTime.parse("2022-01-01T09:26:00"), LocalDateTime.parse("2022-01-01T10:19:00")),
+            Session(Equipment("Elliptical 3", ELLIPTICAL), LocalDateTime.parse("2022-01-01T10:00:00"), LocalDateTime.parse("2022-01-01T10:45:00"))
+        )
+
+        val sessionAnalyzer = SessionAnalyzer(sessions)
+        val results = sessionAnalyzer.analyze()
+
+        assertThat(results).containsExactly(
+            EquipmentUsage(ELLIPTICAL, listOf(Usage(1, 82), Usage(2, 23)))
+        )
+    }
+
 }
 
 class SessionAnalyzer(private val sessions: List<Session>) {
