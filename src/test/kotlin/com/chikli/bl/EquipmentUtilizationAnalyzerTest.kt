@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 class EquipmentUtilizationAnalyzerTest {
+    private val analyzer = EquipmentUtilizationAnalyzer()
 
     @Test
     fun `single equipment`() {
@@ -15,7 +16,6 @@ class EquipmentUtilizationAnalyzerTest {
             Session(Equipment("Treadmill 1", TREADMILL), LocalDateTime.parse("2022-01-01T08:40:00"), LocalDateTime.parse("2022-01-01T08:50:00"))
         )
 
-        val analyzer = EquipmentUtilizationAnalyzer()
         val results = analyzer.analyze(sessions)
 
         assertThat(results).containsExactly(
@@ -29,7 +29,6 @@ class EquipmentUtilizationAnalyzerTest {
             Session(Equipment("Elliptical 1", ELLIPTICAL), LocalDateTime.parse("2022-01-01T09:05:00"), LocalDateTime.parse("2022-01-01T10:22:00"))
         )
 
-        val analyzer = EquipmentUtilizationAnalyzer()
         val results = analyzer.analyze(sessions)
 
         assertThat(results).containsExactly(
@@ -44,7 +43,6 @@ class EquipmentUtilizationAnalyzerTest {
             Session(Equipment("Elliptical 2", ELLIPTICAL), LocalDateTime.parse("2022-01-01T09:05:00"), LocalDateTime.parse("2022-01-01T10:22:00"))
         )
 
-        val analyzer = EquipmentUtilizationAnalyzer()
         val results = analyzer.analyze(sessions)
 
         assertThat(results).containsExactly(
@@ -59,7 +57,6 @@ class EquipmentUtilizationAnalyzerTest {
             Session(Equipment("Elliptical 2", ELLIPTICAL), LocalDateTime.parse("2022-01-01T10:00:00"), LocalDateTime.parse("2022-01-01T10:45:00"))
         )
 
-        val analyzer = EquipmentUtilizationAnalyzer()
         val results = analyzer.analyze(sessions)
 
         assertThat(results).containsExactly(
@@ -75,7 +72,6 @@ class EquipmentUtilizationAnalyzerTest {
             Session(Equipment("Elliptical 3", ELLIPTICAL), LocalDateTime.parse("2022-01-01T10:00:00"), LocalDateTime.parse("2022-01-01T10:45:00"))
         )
 
-        val analyzer = EquipmentUtilizationAnalyzer()
         val results = analyzer.analyze(sessions)
 
         assertThat(results).containsExactly(
@@ -91,7 +87,6 @@ class EquipmentUtilizationAnalyzerTest {
             Session(Equipment("Elliptical 2", ELLIPTICAL), LocalDateTime.parse("2022-01-01T10:00:00"), LocalDateTime.parse("2022-01-01T10:45:00"))
         )
 
-        val analyzer = EquipmentUtilizationAnalyzer()
         val results = analyzer.analyze(sessions)
 
         assertThat(results).containsExactly(
