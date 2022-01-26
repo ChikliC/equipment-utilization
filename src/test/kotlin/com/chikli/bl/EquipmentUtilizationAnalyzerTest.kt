@@ -15,8 +15,8 @@ class EquipmentUtilizationAnalyzerTest {
             Session(Equipment("Treadmill 1", TREADMILL), LocalDateTime.parse("2022-01-01T08:40:00"), LocalDateTime.parse("2022-01-01T08:50:00"))
         )
 
-        val sessionAnalyzer = EquipmentUtilizationAnalyzer(sessions)
-        val results = sessionAnalyzer.analyze()
+        val analyzer = EquipmentUtilizationAnalyzer(sessions)
+        val results = analyzer.analyze()
 
         assertThat(results).containsExactly(
             EquipmentUsage(TREADMILL, listOf(Usage(1, 10)))
@@ -29,8 +29,8 @@ class EquipmentUtilizationAnalyzerTest {
             Session(Equipment("Elliptical 1", ELLIPTICAL), LocalDateTime.parse("2022-01-01T09:05:00"), LocalDateTime.parse("2022-01-01T10:22:00"))
         )
 
-        val sessionAnalyzer = EquipmentUtilizationAnalyzer(sessions)
-        val results = sessionAnalyzer.analyze()
+        val analyzer = EquipmentUtilizationAnalyzer(sessions)
+        val results = analyzer.analyze()
 
         assertThat(results).containsExactly(
             EquipmentUsage(ELLIPTICAL, listOf(Usage(1, 77)))
@@ -44,8 +44,8 @@ class EquipmentUtilizationAnalyzerTest {
             Session(Equipment("Elliptical 2", ELLIPTICAL), LocalDateTime.parse("2022-01-01T09:05:00"), LocalDateTime.parse("2022-01-01T10:22:00"))
         )
 
-        val sessionAnalyzer = EquipmentUtilizationAnalyzer(sessions)
-        val results = sessionAnalyzer.analyze()
+        val analyzer = EquipmentUtilizationAnalyzer(sessions)
+        val results = analyzer.analyze()
 
         assertThat(results).containsExactly(
             EquipmentUsage(ELLIPTICAL, listOf(Usage(2, 77)))
@@ -59,8 +59,8 @@ class EquipmentUtilizationAnalyzerTest {
             Session(Equipment("Elliptical 2", ELLIPTICAL), LocalDateTime.parse("2022-01-01T10:00:00"), LocalDateTime.parse("2022-01-01T10:45:00"))
         )
 
-        val sessionAnalyzer = EquipmentUtilizationAnalyzer(sessions)
-        val results = sessionAnalyzer.analyze()
+        val analyzer = EquipmentUtilizationAnalyzer(sessions)
+        val results = analyzer.analyze()
 
         assertThat(results).containsExactly(
             EquipmentUsage(ELLIPTICAL, listOf(Usage(1, 75)))
@@ -75,8 +75,8 @@ class EquipmentUtilizationAnalyzerTest {
             Session(Equipment("Elliptical 3", ELLIPTICAL), LocalDateTime.parse("2022-01-01T10:00:00"), LocalDateTime.parse("2022-01-01T10:45:00"))
         )
 
-        val sessionAnalyzer = EquipmentUtilizationAnalyzer(sessions)
-        val results = sessionAnalyzer.analyze()
+        val analyzer = EquipmentUtilizationAnalyzer(sessions)
+        val results = analyzer.analyze()
 
         assertThat(results).containsExactly(
             EquipmentUsage(ELLIPTICAL, listOf(Usage(1, 82), Usage(2, 23)))
@@ -91,15 +91,14 @@ class EquipmentUtilizationAnalyzerTest {
             Session(Equipment("Elliptical 2", ELLIPTICAL), LocalDateTime.parse("2022-01-01T10:00:00"), LocalDateTime.parse("2022-01-01T10:45:00"))
         )
 
-        val equipmentUtilizationAnalyzer = EquipmentUtilizationAnalyzer(sessions)
-        val results = equipmentUtilizationAnalyzer.analyze()
+        val analyzer = EquipmentUtilizationAnalyzer(sessions)
+        val results = analyzer.analyze()
 
         assertThat(results).containsExactly(
             EquipmentUsage(ELLIPTICAL, listOf(Usage(1, 75))),
             EquipmentUsage(TREADMILL, listOf(Usage(1, 53)))
         )
     }
-
 }
 
 
